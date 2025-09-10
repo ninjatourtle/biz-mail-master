@@ -13,13 +13,18 @@ interface SpamCheckResult {
   suggestions: string[];
 }
 
-export function SpamChecker() {
-  const [content, setContent] = useState("");
+interface SpamCheckerProps {
+  emailContent?: string;
+}
+
+export function SpamChecker({ emailContent = "" }: SpamCheckerProps) {
+  const [content, setContent] = useState(emailContent);
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<SpamCheckResult | null>(null);
 
   const checkSpam = () => {
     setChecking(true);
+    const textToCheck = emailContent || content;
     setTimeout(() => {
       const score = Math.random() * 100;
       setResult({
@@ -57,16 +62,18 @@ export function SpamChecker() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Textarea
-          placeholder="Вставьте текст письма для проверки..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="min-h-[150px]"
-        />
+        {!emailContent && (
+          <Textarea
+            placeholder="Вставьте текст письма для проверки..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="min-h-[150px]"
+          />
+        )}
         
         <Button 
           onClick={checkSpam} 
-          disabled={!content || checking}
+          disabled={(!content && !emailContent) || checking}
           className="w-full"
         >
           {checking ? "Проверка..." : "Проверить на спам"}

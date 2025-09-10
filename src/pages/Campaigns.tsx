@@ -138,7 +138,11 @@ export default function Campaigns() {
             Управляйте вашими email кампаниями
           </p>
         </div>
-        <Button variant="gradient" className="shadow-glow">
+        <Button 
+          variant="gradient" 
+          className="shadow-glow"
+          onClick={() => navigate("/campaigns/create")}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Новая кампания
         </Button>
