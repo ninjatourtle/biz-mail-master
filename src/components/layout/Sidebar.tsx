@@ -10,6 +10,7 @@ import {
   Send,
   ChevronRight,
   ChevronLeft,
+  MessageSquare,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,6 +34,7 @@ const navigation = [
       { title: "Кампании", url: "/campaigns", icon: Mail },
       { title: "Контакты", url: "/contacts", icon: Users },
       { title: "Шаблоны", url: "/templates", icon: FileText },
+      { title: "Ответы", url: "/replies", icon: MessageSquare },
     ],
   },
   {

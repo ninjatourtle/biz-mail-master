@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Campaigns from "./pages/Campaigns";
 import Contacts from "./pages/Contacts";
 import Templates from "./pages/Templates";
+import Replies from "./pages/Replies";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/campaigns" element={<Layout><Campaigns /></Layout>} />
           <Route path="/contacts" element={<Layout><Contacts /></Layout>} />
           <Route path="/templates" element={<Layout><Templates /></Layout>} />
+          <Route path="/replies" element={<Layout><Replies /></Layout>} />
           <Route path="/analytics" element={<Layout><Dashboard /></Layout>} />
           <Route path="/send" element={<Layout><Dashboard /></Layout>} />
           <Route path="/settings" element={<Layout><Dashboard /></Layout>} />
