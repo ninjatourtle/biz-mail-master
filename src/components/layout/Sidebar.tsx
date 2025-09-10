@@ -77,9 +77,12 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
-        <div className="flex h-16 items-center px-6 border-b border-sidebar-border">
+        <div className={cn(
+          "flex h-16 items-center border-b border-sidebar-border",
+          isCollapsed ? "justify-center px-2" : "px-6"
+        )}>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary flex-shrink-0">
               <Mail className="h-5 w-5 text-primary-foreground" />
             </div>
             {!isCollapsed && (
