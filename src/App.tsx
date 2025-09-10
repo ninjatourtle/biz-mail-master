@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import Dashboard from "./pages/Dashboard";
 import Campaigns from "./pages/Campaigns";
+import CampaignDetails from "./pages/CampaignDetails";
 import Contacts from "./pages/Contacts";
 import Templates from "./pages/Templates";
 import Replies from "./pages/Replies";
@@ -38,6 +39,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Layout><Dashboard /></Layout>} />
           <Route path="/campaigns" element={<Layout><Campaigns /></Layout>} />
+          <Route path="/campaigns/:id" element={<Layout><CampaignDetails /></Layout>} />
           <Route path="/contacts" element={<Layout><Contacts /></Layout>} />
           <Route path="/templates" element={<Layout><Templates /></Layout>} />
           <Route path="/replies" element={<Layout><Replies /></Layout>} />

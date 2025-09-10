@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,6 +104,7 @@ const campaigns: Campaign[] = [
 ];
 
 export default function Campaigns() {
+  const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -182,7 +184,11 @@ export default function Campaigns() {
           </TableHeader>
           <TableBody>
             {filteredCampaigns.map((campaign) => (
-              <TableRow key={campaign.id}>
+              <TableRow 
+                key={campaign.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => navigate(`/campaigns/${campaign.id}`)}
+              >
                 <TableCell className="font-medium">{campaign.name}</TableCell>
                 <TableCell>{getStatusBadge(campaign.status)}</TableCell>
                 <TableCell>{campaign.sent}</TableCell>
