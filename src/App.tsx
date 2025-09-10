@@ -20,6 +20,7 @@ import Segmentation from "./pages/Segmentation";
 import SalesFunnels from "./pages/SalesFunnels";
 import EmailValidation from "./pages/EmailValidation";
 import NotFound from "./pages/NotFound";
+import AllSends from "./pages/AllSends";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +59,7 @@ const App = () => (
           <Route path="/funnels" element={<Layout><SalesFunnels /></Layout>} />
           <Route path="/validation" element={<Layout><EmailValidation /></Layout>} />
           <Route path="/analytics" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/send" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/send" element={<Layout><AllSends /></Layout>} />
           <Route path="/settings" element={<Layout><Dashboard /></Layout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

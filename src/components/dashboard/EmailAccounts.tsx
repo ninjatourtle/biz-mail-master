@@ -177,23 +177,23 @@ export function EmailAccounts() {
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                    <DropdownMenuContent align="end" className="bg-popover">
+                      <DropdownMenuItem className="cursor-pointer">
                         <Settings className="mr-2 h-4 w-4" />
                         Настройки
                       </DropdownMenuItem>
                       {account.status === "active" ? (
-                        <DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
                           <Pause className="mr-2 h-4 w-4" />
                           Приостановить
                         </DropdownMenuItem>
                       ) : (
-                        <DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
                           <Play className="mr-2 h-4 w-4" />
                           Активировать
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem className="text-destructive cursor-pointer">
                         <Trash2 className="mr-2 h-4 w-4" />
                         Удалить
                       </DropdownMenuItem>
