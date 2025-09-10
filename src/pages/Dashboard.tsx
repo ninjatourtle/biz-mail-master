@@ -55,7 +55,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="space-y-6">
         <CampaignChart />
         <RecentCampaigns />
       </div>
