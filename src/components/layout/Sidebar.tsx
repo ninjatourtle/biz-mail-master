@@ -11,6 +11,12 @@ import {
   ChevronRight,
   ChevronLeft,
   MessageSquare,
+  FileSpreadsheet,
+  Beaker,
+  Zap,
+  Target,
+  TrendingUp,
+  CheckCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,9 +44,25 @@ const navigation = [
     ],
   },
   {
+    title: "Аналитика",
+    items: [
+      { title: "Отчеты", url: "/reports", icon: FileSpreadsheet },
+      { title: "A/B Тестирование", url: "/ab-testing", icon: Beaker },
+      { title: "Аналитика", url: "/analytics", icon: BarChart3 },
+    ],
+  },
+  {
+    title: "Автоматизация",
+    items: [
+      { title: "Триггеры", url: "/triggers", icon: Zap },
+      { title: "Воронки", url: "/funnels", icon: TrendingUp },
+      { title: "Сегментация", url: "/segmentation", icon: Target },
+      { title: "Валидация", url: "/validation", icon: CheckCircle },
+    ],
+  },
+  {
     title: "Инструменты",
     items: [
-      { title: "Аналитика", url: "/analytics", icon: BarChart3 },
       { title: "Отправка", url: "/send", icon: Send },
       { title: "Настройки", url: "/settings", icon: Settings },
     ],

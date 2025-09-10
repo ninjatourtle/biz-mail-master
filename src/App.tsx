@@ -12,6 +12,12 @@ import CampaignDetails from "./pages/CampaignDetails";
 import Contacts from "./pages/Contacts";
 import Templates from "./pages/Templates";
 import Replies from "./pages/Replies";
+import Reports from "./pages/Reports";
+import ABTesting from "./pages/ABTesting";
+import TriggerCampaigns from "./pages/TriggerCampaigns";
+import Segmentation from "./pages/Segmentation";
+import SalesFunnels from "./pages/SalesFunnels";
+import EmailValidation from "./pages/EmailValidation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +49,12 @@ const App = () => (
           <Route path="/contacts" element={<Layout><Contacts /></Layout>} />
           <Route path="/templates" element={<Layout><Templates /></Layout>} />
           <Route path="/replies" element={<Layout><Replies /></Layout>} />
+          <Route path="/reports" element={<Layout><Reports /></Layout>} />
+          <Route path="/ab-testing" element={<Layout><ABTesting /></Layout>} />
+          <Route path="/triggers" element={<Layout><TriggerCampaigns /></Layout>} />
+          <Route path="/segmentation" element={<Layout><Segmentation /></Layout>} />
+          <Route path="/funnels" element={<Layout><SalesFunnels /></Layout>} />
+          <Route path="/validation" element={<Layout><EmailValidation /></Layout>} />
           <Route path="/analytics" element={<Layout><Dashboard /></Layout>} />
           <Route path="/send" element={<Layout><Dashboard /></Layout>} />
           <Route path="/settings" element={<Layout><Dashboard /></Layout>} />
