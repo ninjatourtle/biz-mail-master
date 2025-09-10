@@ -173,22 +173,22 @@ export function EmailAccounts() {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="outline" size="icon" aria-label="Действия с аккаунтом">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-popover">
-                      <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuContent align="end" className="bg-popover text-popover-foreground border shadow-lg">
+                      <DropdownMenuItem className="cursor-pointer text-popover-foreground">
                         <Settings className="mr-2 h-4 w-4" />
                         Настройки
                       </DropdownMenuItem>
                       {account.status === "active" ? (
-                        <DropdownMenuItem className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer text-popover-foreground">
                           <Pause className="mr-2 h-4 w-4" />
                           Приостановить
                         </DropdownMenuItem>
                       ) : (
-                        <DropdownMenuItem className="cursor-pointer">
+                        <DropdownMenuItem className="cursor-pointer text-popover-foreground">
                           <Play className="mr-2 h-4 w-4" />
                           Активировать
                         </DropdownMenuItem>
