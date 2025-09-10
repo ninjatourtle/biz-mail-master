@@ -2,6 +2,7 @@ import { Mail, MailOpen, MessageSquare, AlertCircle } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { CampaignChart } from "@/components/dashboard/CampaignChart";
 import { RecentCampaigns } from "@/components/dashboard/RecentCampaigns";
+import { EmailAccounts } from "@/components/dashboard/EmailAccounts";
 import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
@@ -58,6 +59,8 @@ export default function Dashboard() {
         <CampaignChart />
         <RecentCampaigns />
       </div>
+
+      <EmailAccounts />
     </div>
   );
 }
