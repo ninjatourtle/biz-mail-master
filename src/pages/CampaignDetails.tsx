@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   ArrowLeft,
   Mail,
@@ -166,6 +167,117 @@ const CampaignDetails = () => {
     },
   ];
 
+  // Данные контактов для кампании
+  const campaignContacts = [
+    {
+      id: "1",
+      name: "Александр Петров",
+      email: "a.petrov@techcorp.com",
+      company: "TechCorp",
+      status: "replied",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: new Date(2024, 0, 15, 10, 15),
+      clickedAt: new Date(2024, 0, 15, 10, 20),
+      repliedAt: new Date(2024, 0, 15, 14, 30),
+    },
+    {
+      id: "2",
+      name: "Мария Иванова",
+      email: "m.ivanova@startuphub.com",
+      company: "StartupHub",
+      status: "clicked",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: new Date(2024, 0, 15, 11, 45),
+      clickedAt: new Date(2024, 0, 15, 13, 45),
+      repliedAt: null,
+    },
+    {
+      id: "3",
+      name: "Дмитрий Сидоров",
+      email: "d.sidorov@innovatelab.com",
+      company: "InnovateLab",
+      status: "opened",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: new Date(2024, 0, 15, 12, 15),
+      clickedAt: null,
+      repliedAt: null,
+    },
+    {
+      id: "4",
+      name: "Елена Козлова",
+      email: "e.kozlova@digitalagency.ru",
+      company: "Digital Agency",
+      status: "sent",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: null,
+      clickedAt: null,
+      repliedAt: null,
+    },
+    {
+      id: "5",
+      name: "Игорь Новиков",
+      email: "i.novikov@cloudtech.com",
+      company: "CloudTech",
+      status: "bounced",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: null,
+      clickedAt: null,
+      repliedAt: null,
+    },
+    {
+      id: "6",
+      name: "Ольга Смирнова",
+      email: "o.smirnova@fintech.io",
+      company: "FinTech Solutions",
+      status: "unsubscribed",
+      sentAt: new Date(2024, 0, 15, 9, 30),
+      openedAt: new Date(2024, 0, 15, 10, 45),
+      clickedAt: null,
+      repliedAt: null,
+    },
+    {
+      id: "7",
+      name: "Павел Морозов",
+      email: "p.morozov@consulting.com",
+      company: "Business Consulting",
+      status: "opened",
+      sentAt: new Date(2024, 0, 15, 9, 31),
+      openedAt: new Date(2024, 0, 15, 14, 20),
+      clickedAt: null,
+      repliedAt: null,
+    },
+    {
+      id: "8",
+      name: "Анна Волкова",
+      email: "a.volkova@retail.ru",
+      company: "Retail Group",
+      status: "replied",
+      sentAt: new Date(2024, 0, 15, 9, 31),
+      openedAt: new Date(2024, 0, 15, 15, 10),
+      clickedAt: new Date(2024, 0, 15, 15, 12),
+      repliedAt: new Date(2024, 0, 15, 16, 45),
+    },
+  ];
+
+  const getContactStatusBadge = (status: string) => {
+    switch (status) {
+      case "replied":
+        return <Badge className="bg-success/10 text-success border-success/20">Ответил</Badge>;
+      case "clicked":
+        return <Badge className="bg-primary/10 text-primary border-primary/20">Кликнул</Badge>;
+      case "opened":
+        return <Badge className="bg-secondary/10 text-secondary border-secondary/20">Открыл</Badge>;
+      case "sent":
+        return <Badge className="bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20">Отправлено</Badge>;
+      case "bounced":
+        return <Badge variant="destructive">Отказ</Badge>;
+      case "unsubscribed":
+        return <Badge variant="outline">Отписался</Badge>;
+      default:
+        return <Badge variant="outline">Неизвестно</Badge>;
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -321,9 +433,10 @@ const CampaignDetails = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Обзор</TabsTrigger>
           <TabsTrigger value="analytics">Аналитика</TabsTrigger>
+          <TabsTrigger value="contacts">Контакты</TabsTrigger>
           <TabsTrigger value="audience">Аудитория</TabsTrigger>
           <TabsTrigger value="activity">Активность</TabsTrigger>
           <TabsTrigger value="settings">Настройки</TabsTrigger>
@@ -540,6 +653,55 @@ const CampaignDetails = () => {
                   ))}
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="contacts" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Контакты кампании</CardTitle>
+              <CardDescription>
+                Статус отправки писем для всех контактов в кампании
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Контакт</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Компания</TableHead>
+                    <TableHead>Статус</TableHead>
+                    <TableHead>Отправлено</TableHead>
+                    <TableHead>Открыто</TableHead>
+                    <TableHead>Кликнул</TableHead>
+                    <TableHead>Ответил</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {campaignContacts.map((contact) => (
+                    <TableRow key={contact.id}>
+                      <TableCell className="font-medium">{contact.name}</TableCell>
+                      <TableCell className="text-muted-foreground">{contact.email}</TableCell>
+                      <TableCell>{contact.company}</TableCell>
+                      <TableCell>{getContactStatusBadge(contact.status)}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {contact.sentAt ? format(contact.sentAt, "HH:mm", { locale: ru }) : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {contact.openedAt ? format(contact.openedAt, "HH:mm", { locale: ru }) : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {contact.clickedAt ? format(contact.clickedAt, "HH:mm", { locale: ru }) : "-"}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {contact.repliedAt ? format(contact.repliedAt, "HH:mm", { locale: ru }) : "-"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
