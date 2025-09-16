@@ -8,6 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   Search, 
   Mail, 
@@ -19,7 +26,8 @@ import {
   ExternalLink,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  User
 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -36,6 +44,7 @@ interface EmailThread {
   subject: string;
   status: "unread" | "read" | "replied" | "archived";
   priority: "high" | "medium" | "low";
+  emailAccount: string; // Добавлено поле для email аккаунта
   messages: {
     id: string;
     from: string;
@@ -52,6 +61,15 @@ const Replies = () => {
   const [replyContent, setReplyContent] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedAccount, setSelectedAccount] = useState("all");
+
+  // Список email аккаунтов
+  const emailAccounts = [
+    { email: "sales@company.com", name: "Отдел продаж" },
+    { email: "marketing@company.com", name: "Маркетинг" },
+    { email: "support@company.com", name: "Поддержка" },
+    { email: "info@company.com", name: "Общая почта" },
+  ];
 
   // Пример данных
   const threads: EmailThread[] = [
@@ -66,6 +84,7 @@ const Replies = () => {
       subject: "Re: Инновационное решение для вашего бизнеса",
       status: "unread",
       priority: "high",
+      emailAccount: "sales@company.com",
       messages: [
         {
           id: "m1",
@@ -97,6 +116,7 @@ const Replies = () => {
       subject: "Re: Специальное предложение для стартапов",
       status: "replied",
       priority: "medium",
+      emailAccount: "marketing@company.com",
       messages: [
         {
           id: "m3",
@@ -138,7 +158,9 @@ const Replies = () => {
       (activeTab === "replied" && thread.status === "replied") ||
       (activeTab === "archived" && thread.status === "archived");
     
-    return matchesSearch && matchesTab;
+    const matchesAccount = selectedAccount === "all" || thread.emailAccount === selectedAccount;
+    
+    return matchesSearch && matchesTab && matchesAccount;
   });
 
   const handleReply = () => {
@@ -186,6 +208,32 @@ const Replies = () => {
           <Card className="h-[calc(100vh-200px)]">
             <CardHeader className="pb-3">
               <div className="space-y-3">
+                <Select value={selectedAccount} onValueChange={setSelectedAccount}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Выберите аккаунт" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        <span>Все аккаунты</span>
+                      </div>
+                    </SelectItem>
+                    <Separator className="my-1" />
+                    {emailAccounts.map((account) => (
+                      <SelectItem key={account.email} value={account.email}>
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{account.name}</span>
+                            <span className="text-xs text-muted-foreground">{account.email}</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                   <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="all">Все</TabsTrigger>
@@ -194,6 +242,7 @@ const Replies = () => {
                     <TabsTrigger value="archived">Архив</TabsTrigger>
                   </TabsList>
                 </Tabs>
+                
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -241,6 +290,9 @@ const Replies = () => {
                               <Badge variant={getPriorityColor(thread.priority)} className="text-xs">
                                 {thread.priority === "high" ? "Высокий" : 
                                  thread.priority === "medium" ? "Средний" : "Низкий"}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {emailAccounts.find(acc => acc.email === thread.emailAccount)?.name || thread.emailAccount}
                               </Badge>
                               <span className="text-xs text-muted-foreground">
                                 {format(thread.lastReplyDate, "d MMM", { locale: ru })}
