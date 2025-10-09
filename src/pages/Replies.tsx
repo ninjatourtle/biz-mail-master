@@ -27,9 +27,16 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  User
+  User,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  ArrowRight,
+  Users,
+  Calendar,
+  TrendingUp
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
 interface EmailThread {
@@ -62,6 +69,8 @@ const Replies = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedAccount, setSelectedAccount] = useState("all");
+  const [collapsedMessages, setCollapsedMessages] = useState<Set<string>>(new Set());
+  const [showThreadStats, setShowThreadStats] = useState(true);
 
   // Список email аккаунтов
   const emailAccounts = [
@@ -193,6 +202,33 @@ const Replies = () => {
     }
   };
 
+  const toggleMessageCollapse = (messageId: string) => {
+    const newCollapsed = new Set(collapsedMessages);
+    if (newCollapsed.has(messageId)) {
+      newCollapsed.delete(messageId);
+    } else {
+      newCollapsed.add(messageId);
+    }
+    setCollapsedMessages(newCollapsed);
+  };
+
+  const getThreadStats = (thread: EmailThread) => {
+    const totalMessages = thread.messages.length;
+    const outgoingMessages = thread.messages.filter(m => m.isOutgoing).length;
+    const incomingMessages = totalMessages - outgoingMessages;
+    const threadDuration = thread.messages.length > 1
+      ? Math.abs(thread.messages[thread.messages.length - 1].timestamp.getTime() - thread.messages[0].timestamp.getTime()) / (1000 * 60 * 60 * 24)
+      : 0;
+    
+    return {
+      totalMessages,
+      outgoingMessages,
+      incomingMessages,
+      threadDuration: Math.round(threadDuration),
+      responseTime: formatDistanceToNow(thread.lastReplyDate, { locale: ru, addSuffix: true })
+    };
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -286,10 +322,14 @@ const Replies = () => {
                             <p className="text-sm mt-1 line-clamp-2">
                               {thread.subject}
                             </p>
-                            <div className="flex items-center gap-2 mt-2">
+                            <div className="flex items-center flex-wrap gap-2 mt-2">
                               <Badge variant={getPriorityColor(thread.priority)} className="text-xs">
                                 {thread.priority === "high" ? "Высокий" : 
                                  thread.priority === "medium" ? "Средний" : "Низкий"}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs flex items-center gap-1">
+                                <MessageSquare className="h-3 w-3" />
+                                {thread.messages.length}
                               </Badge>
                               <Badge variant="outline" className="text-xs">
                                 {emailAccounts.find(acc => acc.email === thread.emailAccount)?.name || thread.emailAccount}
@@ -313,10 +353,15 @@ const Replies = () => {
         <div className="lg:col-span-2">
           {selectedThread ? (
             <Card className="h-[calc(100vh-200px)]">
-              <CardHeader className="border-b">
+              <CardHeader className="border-b space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <CardTitle>{selectedThread.subject}</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      {selectedThread.subject}
+                      <Badge variant="secondary" className="text-xs">
+                        Цепочка: {selectedThread.messages.length}
+                      </Badge>
+                    </CardTitle>
                     <CardDescription>
                       <div className="flex items-center gap-2">
                         <span>{selectedThread.contact.name}</span>
@@ -327,6 +372,13 @@ const Replies = () => {
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button 
+                      size="icon" 
+                      variant="ghost"
+                      onClick={() => setShowThreadStats(!showThreadStats)}
+                    >
+                      <TrendingUp className="h-4 w-4" />
+                    </Button>
                     <Button size="icon" variant="ghost">
                       <Star className="h-4 w-4" />
                     </Button>
@@ -338,36 +390,150 @@ const Replies = () => {
                     </Button>
                   </div>
                 </div>
+                
+                {showThreadStats && (() => {
+                  const stats = getThreadStats(selectedThread);
+                  return (
+                    <div className="grid grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <MessageSquare className="h-4 w-4" />
+                          <span className="text-xs">Всего сообщений</span>
+                        </div>
+                        <p className="text-2xl font-bold">{stats.totalMessages}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {stats.outgoingMessages} исходящих / {stats.incomingMessages} входящих
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          <span className="text-xs">Последний ответ</span>
+                        </div>
+                        <p className="text-sm font-semibold">{stats.responseTime}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(selectedThread.lastReplyDate, "d MMM, HH:mm", { locale: ru })}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          <span className="text-xs">Длительность</span>
+                        </div>
+                        <p className="text-2xl font-bold">
+                          {stats.threadDuration > 0 ? `${stats.threadDuration}д` : 'Сегодня'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">диалога</p>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Users className="h-4 w-4" />
+                          <span className="text-xs">Участники</span>
+                        </div>
+                        <p className="text-2xl font-bold">2</p>
+                        <p className="text-xs text-muted-foreground">в переписке</p>
+                      </div>
+                    </div>
+                  );
+                })()}
               </CardHeader>
               <CardContent className="p-0">
-                <ScrollArea className="h-[calc(100vh-480px)]">
-                  <div className="p-6 space-y-4">
-                    {selectedThread.messages.map((message, index) => (
-                      <div key={message.id}>
-                        <div className={`flex ${message.isOutgoing ? "justify-end" : "justify-start"}`}>
-                          <div className={`max-w-[80%] space-y-2 ${
-                            message.isOutgoing ? "items-end" : "items-start"
-                          }`}>
-                            <div className={`rounded-lg p-4 ${
-                              message.isOutgoing 
-                                ? "bg-primary text-primary-foreground" 
-                                : "bg-muted"
+                <ScrollArea className="h-[calc(100vh-580px)]">
+                  <div className="p-6 space-y-1">
+                    {selectedThread.messages.map((message, index) => {
+                      const isCollapsed = collapsedMessages.has(message.id);
+                      const canCollapse = index < selectedThread.messages.length - 2;
+                      
+                      return (
+                        <div key={message.id} className="relative">
+                          {/* Thread connection line */}
+                          {index < selectedThread.messages.length - 1 && (
+                            <div className={`absolute left-6 top-12 h-[calc(100%+1rem)] w-0.5 bg-border ${
+                              message.isOutgoing ? 'left-auto right-6' : ''
+                            }`} />
+                          )}
+                          
+                          <div className={`flex ${message.isOutgoing ? "justify-end" : "justify-start"} relative z-10`}>
+                            <div className={`max-w-[80%] space-y-2 ${
+                              message.isOutgoing ? "items-end" : "items-start"
                             }`}>
-                              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                            </div>
-                            <div className="flex items-center gap-2 px-1">
-                              <Clock className="h-3 w-3 text-muted-foreground" />
-                              <span className="text-xs text-muted-foreground">
-                                {format(message.timestamp, "d MMM, HH:mm", { locale: ru })}
-                              </span>
+                              {/* Message header */}
+                              <div className="flex items-center gap-2 px-1">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarFallback className="text-xs">
+                                    {message.isOutgoing ? "Я" : selectedThread.contact.name.split(" ").map(n => n[0]).join("")}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="text-xs font-medium">
+                                  {message.isOutgoing ? "Вы" : selectedThread.contact.name}
+                                </span>
+                                <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-xs text-muted-foreground">
+                                  {message.isOutgoing ? selectedThread.contact.name : "Вы"}
+                                </span>
+                              </div>
+                              
+                              {/* Collapsible message content */}
+                              {canCollapse && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => toggleMessageCollapse(message.id)}
+                                  className="h-6 text-xs px-2"
+                                >
+                                  {isCollapsed ? (
+                                    <>
+                                      <ChevronDown className="h-3 w-3 mr-1" />
+                                      Показать сообщение
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ChevronUp className="h-3 w-3 mr-1" />
+                                      Скрыть сообщение
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+                              
+                              {(!canCollapse || !isCollapsed) && (
+                                <div className={`rounded-lg p-4 shadow-sm ${
+                                  message.isOutgoing 
+                                    ? "bg-primary text-primary-foreground" 
+                                    : "bg-muted"
+                                }`}>
+                                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                                </div>
+                              )}
+                              
+                              {/* Message footer */}
+                              <div className="flex items-center gap-2 px-1">
+                                <Clock className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-xs text-muted-foreground">
+                                  {format(message.timestamp, "d MMM, HH:mm", { locale: ru })}
+                                </span>
+                                {index === selectedThread.messages.length - 1 && !message.isOutgoing && (
+                                  <Badge variant="outline" className="text-xs ml-2">
+                                    Последнее сообщение
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          
+                          {/* Thread progress indicator */}
+                          {index < selectedThread.messages.length - 1 && (
+                            <div className="flex items-center justify-center my-4">
+                              <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full">
+                                <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                                <span className="text-xs text-muted-foreground">
+                                  {index + 1} из {selectedThread.messages.length}
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        {index < selectedThread.messages.length - 1 && (
-                          <Separator className="my-4" />
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </ScrollArea>
                 <div className="border-t p-4 space-y-3">
