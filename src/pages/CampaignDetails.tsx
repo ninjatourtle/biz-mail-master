@@ -27,6 +27,9 @@ import {
   UserCheck,
   XCircle,
   AlertCircle,
+  Smile,
+  Frown,
+  Meh,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -86,6 +89,14 @@ const CampaignDetails = () => {
     { day: "Сб", sent: 189, opened: 67, clicked: 12, replied: 0 },
     { day: "Вс", sent: 142, opened: 49, clicked: 9, replied: 0 },
   ];
+
+  // Анализ настроения ответов
+  const sentimentAnalysis = {
+    positive: 62,
+    neutral: 28,
+    negative: 10,
+    total: 87,
+  };
 
   // Контакты кампании
   const contacts = [
@@ -545,6 +556,107 @@ const CampaignDetails = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Sentiment Analysis */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Анализ настроения ответов</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                AI-анализ тональности полученных ответов
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Positive */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-success/10">
+                        <Smile className="h-5 w-5 text-success" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Позитивные</p>
+                        <p className="text-xs text-muted-foreground">
+                          Заинтересованность, благодарность
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold">{sentimentAnalysis.positive}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {Math.round((sentimentAnalysis.positive / sentimentAnalysis.total) * 100)}%
+                      </p>
+                    </div>
+                  </div>
+                  <Progress
+                    value={(sentimentAnalysis.positive / sentimentAnalysis.total) * 100}
+                    className="h-2 bg-success/20 [&>div]:bg-success"
+                  />
+                </div>
+
+                {/* Neutral */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-muted">
+                        <Meh className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Нейтральные</p>
+                        <p className="text-xs text-muted-foreground">
+                          Вопросы, уточнения
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold">{sentimentAnalysis.neutral}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {Math.round((sentimentAnalysis.neutral / sentimentAnalysis.total) * 100)}%
+                      </p>
+                    </div>
+                  </div>
+                  <Progress
+                    value={(sentimentAnalysis.neutral / sentimentAnalysis.total) * 100}
+                    className="h-2"
+                  />
+                </div>
+
+                {/* Negative */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-lg bg-destructive/10">
+                        <Frown className="h-5 w-5 text-destructive" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Негативные</p>
+                        <p className="text-xs text-muted-foreground">
+                          Жалобы, отказы
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold">{sentimentAnalysis.negative}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {Math.round((sentimentAnalysis.negative / sentimentAnalysis.total) * 100)}%
+                      </p>
+                    </div>
+                  </div>
+                  <Progress
+                    value={(sentimentAnalysis.negative / sentimentAnalysis.total) * 100}
+                    className="h-2 bg-destructive/20 [&>div]:bg-destructive"
+                  />
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Всего проанализировано:</span>
+                    <span className="font-semibold">{sentimentAnalysis.total} ответов</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
